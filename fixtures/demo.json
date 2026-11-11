@@ -1,0 +1,60 @@
+{
+  "source_id": "synthetic-source",
+  "authorization": {
+    "purposes": [
+      "research"
+    ],
+    "regions": [
+      "cn",
+      "eu"
+    ],
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_until": "2027-01-01T00:00:00Z",
+    "obligations": [
+      "attribution"
+    ],
+    "allow_export": true
+  },
+  "profile": {},
+  "records": [
+    {
+      "external_id": "a",
+      "version": 1,
+      "text": "alpha beta gamma delta epsilon",
+      "metadata": {}
+    },
+    {
+      "external_id": "b",
+      "version": 1,
+      "text": "alpha beta gamma delta epsilon",
+      "metadata": {}
+    },
+    {
+      "external_id": "c",
+      "version": 1,
+      "text": "separate useful words make another corpus document",
+      "metadata": {}
+    },
+    {
+      "external_id": "short",
+      "version": 1,
+      "text": "brief",
+      "metadata": {}
+    }
+  ],
+  "context": {
+    "purpose": "research",
+    "region": "cn",
+    "at": "2026-11-11T00:00:00Z",
+    "fulfilled_obligations": [
+      "attribution"
+    ]
+  },
+  "selection": {
+    "seed": "fixed",
+    "splits": {
+      "train": 8000,
+      "test": 2000
+    }
+  }
+}

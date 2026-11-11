@@ -1,0 +1,40 @@
+{
+  "/mailbox": {
+    "body": {
+      "mailbox_epoch": "epoch-1",
+      "messages": [
+        {
+          "uid": 1,
+          "url": "/mail/1"
+        },
+        {
+          "uid": 2,
+          "url": "/mail/2"
+        }
+      ]
+    }
+  },
+  "/mailbox?epoch=2": {
+    "body": {
+      "mailbox_epoch": "epoch-2",
+      "messages": [
+        {
+          "uid": 1,
+          "url": "/mail/new1"
+        }
+      ]
+    }
+  },
+  "/mail/1": {
+    "file": "message.eml",
+    "type": "message/rfc822"
+  },
+  "/mail/2": {
+    "file": "bad.eml",
+    "type": "message/rfc822"
+  },
+  "/mail/new1": {
+    "file": "conflict.eml",
+    "type": "message/rfc822"
+  }
+}

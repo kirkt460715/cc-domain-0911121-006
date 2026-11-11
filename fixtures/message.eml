@@ -1,0 +1,36 @@
+Subject: =?utf-8?b?5ZCI5oiQ5py657uE57u05oqk6LWE5paZ?=
+From: docs@example.invalid
+To: inbox@example.invalid
+Message-ID: <maintenance-1@example.invalid>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7728858130751528869=="
+
+--===============7728858130751528869==
+Content-Type: multipart/alternative;
+ boundary="===============3810131682338933713=="
+
+--===============3810131682338933713==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+维护步骤：先核对设备编号，再检查温度。
+
+--===============3810131682338933713==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PGFydGljbGU+PHA+57u05oqk5q2l6aqk77ya5YWI5qC45a+56K6+5aSH57yW5Y+377yM5YaN5qOA
+5p+l5rip5bqm44CCPC9wPjwvYXJ0aWNsZT4K
+
+--===============3810131682338933713==--
+
+--===============7728858130751528869==
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename*=utf-8''%E8%AE%B0%E5%BD%95.txt
+MIME-Version: 1.0
+
+6YOo5Lu2IEEg55qE5qOA5p+l6K6w5b2V44CC
+
+--===============7728858130751528869==--
