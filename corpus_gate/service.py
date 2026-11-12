@@ -12,6 +12,7 @@ from corpus_gate.review.appeals import Appeals
 from corpus_gate.releases import manifests, exporting, selection
 from corpus_gate.releases.transfer import Receiver
 from corpus_gate.releases.withdrawals import Notices
+from corpus_gate.mail import connector as mail_connector
 
 
 class CorpusGate:
@@ -171,6 +172,16 @@ class CorpusGate:
             'system.quality': (bind(inspection.quality_report), '', 'source_id'),
             'system.source_impact': (bind(inspection.source_impact), 'source_id', ''),
             'audit.page': (bind(inspection.audit_page), '', 'after limit'),
+            'mail.sync': (bind(mail_connector.sync), 'mailbox_id base_url source_id profile_id context', 'epoch limit sync_id mailbox_endpoint'),
+            'mail.delivery': (bind(mail_connector.get_delivery), 'delivery_id', ''),
+            'mail.deliveries': (bind(mail_connector.list_deliveries), '', 'mailbox_id epoch state'),
+            'mail.part': (bind(mail_connector.get_part), 'part_id', ''),
+            'mail.parts': (bind(mail_connector.list_parts), '', 'delivery_id state'),
+            'mail.trace': (bind(mail_connector.trace_document), 'document_id', ''),
+            'mail.conflicts': (bind(mail_connector.conflicts), '', 'message_id'),
+            'mail.sync_status': (bind(mail_connector.sync_status), 'sync_id', ''),
+            'mail.syncs': (bind(mail_connector.list_syncs), '', 'mailbox_id'),
+            'mail.retry': (bind(mail_connector.retry_delivery), 'delivery_id context', 'corrections base_url'),
         }
 
     def transaction(self, requests):

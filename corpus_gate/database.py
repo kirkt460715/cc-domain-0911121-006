@@ -26,6 +26,13 @@ CREATE TABLE IF NOT EXISTS releases(release_id TEXT PRIMARY KEY,revision INTEGER
 CREATE TABLE IF NOT EXISTS release_members(release_id TEXT NOT NULL REFERENCES releases(release_id),document_id TEXT NOT NULL,cluster_id TEXT NOT NULL,split TEXT NOT NULL,ordinal INTEGER NOT NULL,payload TEXT NOT NULL,digest TEXT NOT NULL,PRIMARY KEY(release_id,document_id));
 CREATE TABLE IF NOT EXISTS release_events(event_id INTEGER PRIMARY KEY AUTOINCREMENT,release_id TEXT NOT NULL,action TEXT NOT NULL,body TEXT NOT NULL,at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS audit(position INTEGER PRIMARY KEY AUTOINCREMENT,action TEXT NOT NULL,payload TEXT NOT NULL,previous_hash TEXT NOT NULL,entry_hash TEXT NOT NULL,at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS mail_syncs(sync_id TEXT PRIMARY KEY,mailbox_id TEXT NOT NULL,epoch TEXT NOT NULL,source_id TEXT NOT NULL,profile_id TEXT NOT NULL,state TEXT NOT NULL,fetched_total INTEGER NOT NULL,deliveries INTEGER NOT NULL,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS mail_deliveries(delivery_id TEXT PRIMARY KEY,mailbox_id TEXT NOT NULL,epoch TEXT NOT NULL,uid INTEGER NOT NULL,url TEXT NOT NULL,source_id TEXT NOT NULL,profile_id TEXT NOT NULL,message_id TEXT,subject TEXT,eml_digest TEXT NOT NULL,state TEXT NOT NULL,batch_id TEXT,error TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,UNIQUE(mailbox_id,epoch,uid));
+CREATE INDEX IF NOT EXISTS mail_delivery_sync ON mail_deliveries(mailbox_id,epoch,state);
+CREATE TABLE IF NOT EXISTS mail_parts(part_id TEXT PRIMARY KEY,delivery_id TEXT NOT NULL REFERENCES mail_deliveries(delivery_id),mime_path TEXT NOT NULL,role TEXT NOT NULL,media_type TEXT NOT NULL,charset TEXT,filename TEXT,content_digest TEXT,byte_size INTEGER,summary TEXT,state TEXT NOT NULL,error TEXT,document_id TEXT,batch_id TEXT,ordinal INTEGER,ignored_reason TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,UNIQUE(delivery_id,mime_path));
+CREATE INDEX IF NOT EXISTS mail_part_delivery ON mail_parts(delivery_id,state);
+CREATE INDEX IF NOT EXISTS mail_part_document ON mail_parts(document_id);
+CREATE TABLE IF NOT EXISTS mail_message_index(message_id TEXT NOT NULL,eml_digest TEXT NOT NULL,delivery_id TEXT NOT NULL REFERENCES mail_deliveries(delivery_id),first_seen_at TEXT NOT NULL,state TEXT NOT NULL,PRIMARY KEY(message_id,eml_digest));
 '''
 
 
@@ -38,11 +45,11 @@ class Database:
         self.db.execute('PRAGMA journal_mode=WAL')
         self.db.execute('PRAGMA synchronous=FULL')
         version = self.db.execute('PRAGMA user_version').fetchone()[0]
-        if version not in (0, 1):
+        if version not in (0, 1, 2):
             self.db.close()
             fail('database_version', 'Unsupported corpus database version')
         self.db.executescript(DDL)
-        self.db.execute('PRAGMA user_version=1')
+        self.db.execute('PRAGMA user_version=2')
         self.depth = 0
 
     def close(self):

@@ -10,6 +10,14 @@
         {
           "uid": 2,
           "url": "/mail/2"
+        },
+        {
+          "uid": 3,
+          "url": "/mail/3"
+        },
+        {
+          "uid": 4,
+          "url": "/mail/4"
         }
       ]
     }
@@ -35,6 +43,14 @@
   },
   "/mail/new1": {
     "file": "conflict.eml",
+    "type": "message/rfc822"
+  },
+  "/mail/3": {
+    "file": "partial.eml",
+    "type": "message/rfc822"
+  },
+  "/mail/4": {
+    "file": "forward.eml",
     "type": "message/rfc822"
   }
 }

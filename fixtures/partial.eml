@@ -1,0 +1,26 @@
+Subject: =?utf-8?b?5a6J5YWo5rG96L2m6YCa55+l?=
+From: docs@example.invalid
+Message-ID: <partial-1@example.invalid>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============partial-boundary=="
+
+--===============partial-boundary==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+巡检报告正文：机组运行正常，请归档。
+
+--===============partial-boundary==
+Content-Type: image/png; name="signature.png"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="signature.png"
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==
+
+--===============partial-boundary==
+Content-Type: text/plain; charset=x-unknown
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="broken.txt"
+
+//4=
+--===============partial-boundary==--

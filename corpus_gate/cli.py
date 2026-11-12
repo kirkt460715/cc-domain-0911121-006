@@ -5,6 +5,7 @@ from corpus_gate.errors import GateError, canonical, loads, shape, fail
 from corpus_gate.service import CorpusGate
 from corpus_gate import batch, documents, inspection
 from corpus_gate.ingest import sources, formats, bundles
+from corpus_gate.mail import connector as mail_connector
 from corpus_gate.text import profiles
 from corpus_gate.dedup import clusters
 from corpus_gate.releases import manifests, exporting, transfer
@@ -88,6 +89,27 @@ def parser():
     sub.add_parser('operations')
     demo = sub.add_parser('demo')
     demo.add_argument('--fixture', required=True)
+    sync_mail = sub.add_parser('mail-sync')
+    sync_mail.add_argument('--mailbox', required=True)
+    sync_mail.add_argument('--base-url', required=True)
+    sync_mail.add_argument('--source', required=True)
+    sync_mail.add_argument('--profile', required=True)
+    sync_mail.add_argument('--context', required=True)
+    sync_mail.add_argument('--epoch')
+    sync_mail.add_argument('--limit', type=int)
+    sync_mail.add_argument('--sync-id')
+    retry_mail = sub.add_parser('mail-retry')
+    retry_mail.add_argument('delivery_id')
+    retry_mail.add_argument('--context', required=True)
+    retry_mail.add_argument('--corrections')
+    retry_mail.add_argument('--base-url')
+    mail_trace = sub.add_parser('mail-trace')
+    mail_trace.add_argument('document_id')
+    mail_deliveries = sub.add_parser('mail-deliveries')
+    mail_deliveries.add_argument('--mailbox')
+    mail_deliveries.add_argument('--epoch')
+    mail_deliveries.add_argument('--state')
+    sub.add_parser('mail-conflicts')
     return root
 
 
@@ -164,6 +186,17 @@ def execute(app, args):
         return [{'operation': key, 'required': required.split(), 'optional': optional.split()} for key, (_, required, optional) in sorted(app.operations().items())]
     if args.command == 'demo':
         return demonstrate(app, json_file(args.fixture))
+    if args.command == 'mail-sync':
+        return mail_connector.sync(app.db, args.mailbox, args.base_url, args.source, args.profile, json_file(args.context), epoch=args.epoch, limit=args.limit, sync_id=args.sync_id)
+    if args.command == 'mail-retry':
+        corrections = json_file(args.corrections) if args.corrections else None
+        return mail_connector.retry_delivery(app.db, args.delivery_id, json_file(args.context), corrections=corrections, base_url=args.base_url)
+    if args.command == 'mail-trace':
+        return mail_connector.trace_document(app.db, args.document_id)
+    if args.command == 'mail-deliveries':
+        return mail_connector.list_deliveries(app.db, args.mailbox, args.epoch, args.state)
+    if args.command == 'mail-conflicts':
+        return mail_connector.conflicts(app.db)
     fail('command', 'Unsupported command')
 
 
@@ -176,6 +209,8 @@ def main(argv=None):
         if args.command == 'check' and not result['ok']:
             return 2
         if args.command in {'ingest', 'resume'} and result['counts'].get('failed', 0):
+            return 2
+        if args.command == 'mail-sync' and result['failures']:
             return 2
         return 0
     except GateError as exc:
